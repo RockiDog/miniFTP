@@ -5,19 +5,13 @@
 
 #include <string>
 #include <fstream>
+#include <list>
+#include <utility>
 
 namespace miniftp {
 
 typedef char Byte;
-const long long MAX_INT = 0x7FFFFFFF;
-
-enum DataType {
-  SHORT,
-  LONG,
-  LONG_LONG,
-  FLOAT,
-  DOUBLE
-};
+const int MAX_INT = 0x7FFFFFFF;
 
 class TCPClient {
  public:
@@ -26,18 +20,13 @@ class TCPClient {
   ~TCPClient();
 
  public:
-  const WSADATA& wsa_data();
-  const SOCKET& socket_client();
-  const SOCKADDR_IN& server_addr();
-  int port();
-  bool is_connected();
-
- public:
   bool Conn();
   bool Conn(const std::string& ip_addr, const int& port);
   void Close();
   bool Send(const Byte* data, long long length);
+  bool Send(const std::list< std::pair<Byte*, int> >& blocks, long long length);
   bool Recv(char* buffer, long long length);
+  bool Recv(const std::list< std::pair<Byte*, int> >& blocks, long long length);
 
  private:
   WSADATA wsa_data_;

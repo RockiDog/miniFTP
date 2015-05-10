@@ -3,12 +3,14 @@
 
 #include "tcpclient.h"
 
+#include <list>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace miniftp {
 
-const int SERVER_DATA_PORT = 20;
+const int DEFAULT_CTRL_PORT = 21;
 const int MAX_TRY_TIMES = 5;
 
 class FTPClient {
@@ -17,16 +19,15 @@ class FTPClient {
   
  public:
   bool Connect();
-  std::string Pwd();
-  std::string List();
-  bool Chdir(const std::string& dir = "");
+  const std::string& Pwd();
+  std::string Lsfile(const std::string& path);
+  bool Chdir(const std::string& dir);
   bool Put(const std::string& local, const std::string& remote);
   bool Get(const std::string& remote, const std::string& local);
-  bool Quit();
+  void Quit();
 
  private:
   std::vector<std::string> split(const std::string& str, char separator);
-  int toint(const std::string& str);
 
  private:
   int ctrl_port_;

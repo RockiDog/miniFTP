@@ -27,18 +27,12 @@
     <ClCompile Include="testunit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ftpserver.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ftpclient.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="tcpclient.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ftpserver.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

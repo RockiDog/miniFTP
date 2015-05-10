@@ -74,14 +74,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ftpclient.cpp" />
-    <ClCompile Include="ftpserver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tcpclient.cpp" />
     <ClCompile Include="testunit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ftpclient.h" />
-    <ClInclude Include="ftpserver.h" />
     <ClInclude Include="tcpclient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

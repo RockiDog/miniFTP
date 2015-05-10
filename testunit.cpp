@@ -1,10 +1,5 @@
-#include "ftpclient.h"
+int Main(int argc, char** argv);
 
-#include <iostream>
-
-using namespace miniftp;
-using namespace std;
-
-int main() {
-  return 0;
+int main(int argc, char** argv) {
+  return Main(argc, argv);
 }
