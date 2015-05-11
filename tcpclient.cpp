@@ -41,14 +41,17 @@ bool TCPClient::Conn() {
   /***************************************/
   server_addr_.sin_family = AF_INET;
   server_addr_.sin_port = htons(port_);
-  if (inet_pton(AF_INET, host_name_.c_str(), &server_addr_.sin_addr.s_addr) != 0)
+  if (InetPton(AF_INET, host_name_.c_str(), &server_addr_.sin_addr.s_addr) != 1) {
+    printf("Cannot resolve the host name: %s:%d\n", host_name_.c_str(), port_);
     return false;
+  }
 
   /*******************/
   /* Create a socket */
   /*******************/
   socket_client_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (socket_client_ == INVALID_SOCKET) {
+    printf("Invalid socket!\n");
     Close();
     return false;
   }
@@ -57,6 +60,7 @@ bool TCPClient::Conn() {
   /* Attempt to connect */
   /**********************/
   if (connect(socket_client_, (const SOCKADDR*)(&server_addr_), sizeof(server_addr_)) == SOCKET_ERROR) {
+    printf("Failed to connect!\n");
     Close();
     return false;
   }

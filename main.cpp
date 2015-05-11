@@ -6,10 +6,10 @@
 #include <map>
 #include <string>
 
-#define DEBUG_MODE 
+//#define DEBUG_MODE 
 
-using namespace std;
 using namespace miniftp;
+using namespace std;
 
 namespace {
 
@@ -22,6 +22,7 @@ string g_current_path;
 }
 
 void PrintHelp() {
+  printf("help\n");
 }
 
 vector<string> split(const string& str, char separator) {
@@ -68,9 +69,9 @@ int Main(int argc, char** argv) {
       PrintHelp();
       return 0;
     } else if (argv[i] == "-p") {
-      g_port = atoi(argv[i++]);
+      g_port = atoi(argv[++i]);
     } else if (argv[i] == "-d") {
-      g_init_dir = argv[i++];
+      g_init_dir = argv[++i];
     } else {
       g_hostname = argv[i];
     }
@@ -81,7 +82,15 @@ int Main(int argc, char** argv) {
   /*************************/
 #ifndef DEBUG_MODE
   g_ftpclient = new FTPClient(g_hostname, g_init_dir, g_port);
+  printf("Connecting to the server %s\\%s:%d...\n", g_hostname.c_str(), g_init_dir.c_str(), g_port);
+  if (g_ftpclient->Connect() == false) {
+    printf("Cannot connect to the server!\n");
+    return 0;
+  } else {
+    printf("Connecting to the server succeeded!\n");
+  }
 #endif
+
   while (true) {
     cout << ">>> ";
     string command;
@@ -96,7 +105,7 @@ int Main(int argc, char** argv) {
     /***************************/
     /* QUIT to quit the client */
     /***************************/
-    if (parameters[0] == "quit") {
+    if (parameters[0] == "quit" || parameters[0] == "exit") {
       break;
 
     /*********************************/

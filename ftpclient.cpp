@@ -22,13 +22,13 @@ FTPClient::FTPClient(const string& remote_addr, const string& remote_dir, int po
 bool FTPClient::Connect() {
   int tried_times = 0;
   while (tried_times < MAX_TRY_TIMES) {
-    if (ctrl_client_.Conn() == true) {
-      if (SetCurrentDirectory(current_path_.c_str()) == false) {
-        printf("GetCurrentDirectory failed(%d)\n", GetLastError());
-        break;
-      }
+    if (tried_times == 0)
+      printf("Trying the first time...\n");
+    else
+      printf("Trying %d times...\n", tried_times + 1);
+
+    if (ctrl_client_.Conn() == true)
       return true;
-    }
     ++tried_times;
     Sleep(3000);
   }
