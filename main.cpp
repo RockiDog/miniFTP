@@ -16,7 +16,7 @@ namespace {
 FTPClient* g_ftpclient = 0;
 int g_port = DEFAULT_CTRL_PORT;
 string g_hostname;
-string g_init_dir;
+string g_init_dir = "\\";
 string g_current_path;
 
 }
@@ -65,12 +65,12 @@ int Main(int argc, char** argv) {
   /* Initialization Parameters */
   /*****************************/
   for (int i = 1; i < argc; ++i) {
-    if (argv[i] == "-h") {
+    if (strcmp(argv[i], "-h") == 0) {
       PrintHelp();
       return 0;
-    } else if (argv[i] == "-p") {
+    } else if (strcmp(argv[i], "-p") == 0) {
       g_port = atoi(argv[++i]);
-    } else if (argv[i] == "-d") {
+    } else if (strcmp(argv[i], "-d") == 0) {
       g_init_dir = argv[++i];
     } else {
       g_hostname = argv[i];
@@ -121,7 +121,7 @@ int Main(int argc, char** argv) {
       if (parameters.size() > 1)
         cout << g_ftpclient->Lsfile(parameters[1]) << endl;
       else
-        cout << g_ftpclient->Lsfile(".\\") << endl;
+        cout << g_ftpclient->Lsfile(".") << endl;
 
     /***********************/
     /* PUT to upload files */
