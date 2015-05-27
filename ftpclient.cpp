@@ -123,12 +123,12 @@ bool FTPClient::Put(const std::string& local, const std::string& remote) {
     printf("File %s not exists!\n");
     return false;
   }
-  ifs.seekg(0);
 
   /*****************/
   /* Read the file */
   /*****************/
   streamsize filesize = ifs.tellg();
+  ifs.seekg(0);
   list< pair<Byte*, int> > blocks;
   for (int i = 0; i < filesize / MAX_INT; ++i) {
     Byte* block = new Byte[MAX_INT];
@@ -221,7 +221,7 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
   /*******************************************/
   /* Make sure the local file can be created */
   /*******************************************/
-  ofstream ofs(local);
+  ofstream ofs(local, ofstream::binary);
   if (!ofs) {
     printf("Can not create local file '%s'\n", local.c_str());
     return false;
@@ -263,6 +263,7 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
               /*********************/
               streamsize filesize;
               if (data_client_.Recv((Byte*)(&filesize), sizeof(filesize)) == true) {
+                printf("File size: %d bytes\n", filesize);
 
                 /*********************/
                 /* Create block list */
@@ -282,36 +283,18 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
                 /********************/
                 if (data_client_.Recv(blocks, filesize) == true) {
 
-                  /***************************************/
-                  /* Wait for the acknowledgment message */
-                  /***************************************/
-                  long long byte_count;
-                  if (ctrl_client_.Recv((Byte*)(&byte_count), sizeof(byte_count)) == true) {
-                    if (byte_count == filesize) {
-
-                      /**************************/
-                      /* Write back to the disk */
-                      /**************************/
-                      for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it) {
-                        ofs.write(it->first, it->second);
-                        delete [] it->first;
-                      }
-                      delete [] buffer;
-                      ofs.close();
-                      data_client_.Close();
-                      return true;
-                    } else {
-                      for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it)
-                        delete [] it->first;
-                      printf("Wrong bytes number!\n");
-                      break;
-                    }
-                  } else {
-                    for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it)
-                      delete [] it->first;
-                    printf("Connection lost!\n");
-                    break;
+                  /**************************/
+                  /* Write back to the disk */
+                  /**************************/
+                  for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it) {
+                    printf("block size %d\n", it->second);
+                    ofs.write(it->first, it->second);
+                    delete [] it->first;
                   }
+                  delete [] buffer;
+                  ofs.close();
+                  data_client_.Close();
+                  return true;
                 } else {
                   for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it)
                     delete [] it->first;
