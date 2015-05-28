@@ -154,7 +154,7 @@ int Main(int argc, char** argv) {
           PrintHelp();
           break;
         case 2:
-          g_ftpclient->Get(parameters[1], ".\\");
+          g_ftpclient->Get(parameters[1], parameters[1]);
           break;
         case 3:
           g_ftpclient->Get(parameters[1], parameters[2]);

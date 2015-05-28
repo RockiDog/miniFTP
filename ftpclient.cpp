@@ -223,7 +223,7 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
   /*******************************************/
   ofstream ofs(local);
   if (!ofs) {
-    printf("Can not create local file!\n");
+    printf("Can not create local file '%s'\n", local.c_str());
     return false;
   }
 
@@ -249,6 +249,7 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
           printf("%s\n", buffer + 1);
         } else {
           data_port_ = atoi(buffer);
+          printf("Connecting to the data port %s...\n", buffer);
 
           /**********************************************/
           /* Return false after tried for several times */
