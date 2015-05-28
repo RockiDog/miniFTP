@@ -163,6 +163,7 @@ bool FTPClient::Put(const std::string& local, const std::string& remote) {
           printf("%s\n", buffer + 1);
         } else {
           data_port_ = atoi(buffer);
+          printf("Connecting to the data port %s...\n", buffer);
 
           /**********************************************/
           /* Return false after tried for several times */
@@ -175,27 +176,12 @@ bool FTPClient::Put(const std::string& local, const std::string& remote) {
               /* Transfer the file */
               /*********************/
               if (data_client_.Send(blocks, filesize) == true) {
-
-                /************************************/
-                /* Wait for the acknowledge message */
-                /************************************/
-                long long byte_count;
-                if (ctrl_client_.Recv((Byte*)(&byte_count), sizeof(byte_count)) == true) {
-                  if (byte_count == filesize) {
-                    for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it)
-                      delete [] it->first;
-                    delete [] buffer;
-                    ifs.close();
-                    data_client_.Close();
-                    return true;
-                  } else {
-                    printf("Wrong bytes number!\n");
-                    break;
-                  }
-                } else {
-                  printf("Connection lost!\n");
-                  break;
-                }
+                for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it)
+                  delete [] it->first;
+                delete [] buffer;
+                ifs.close();
+                data_client_.Close();
+                return true;
               } else {
                 printf("Failed to send!\n");
                 break;
@@ -287,7 +273,6 @@ bool FTPClient::Get(const std::string& remote, const std::string& local) {
                   /* Write back to the disk */
                   /**************************/
                   for (list< pair<Byte*, int> >::const_iterator it = blocks.cbegin(); it != blocks.cend(); ++it) {
-                    printf("block size %d\n", it->second);
                     ofs.write(it->first, it->second);
                     delete [] it->first;
                   }
